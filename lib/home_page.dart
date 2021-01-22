@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class HomePage extends StatefulWidget {
   //항상 변화하는 채팅앱이기때문에
@@ -59,7 +60,9 @@ class _HomePageState extends State<HomePage> {
 
 
   void _handleSubmitted(String text) {
-    print(text);
+    var logger =Logger();
+    logger.d(text);
+    logger.e(text);
     _textEditingController.clear();               //텍스트에디터를 클리어해주어 없애준다.
   }
 }
