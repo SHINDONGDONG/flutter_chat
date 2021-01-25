@@ -10,7 +10,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController _textEditingController = TextEditingController();
-  List<ChatMessage> _chats =[];                       // 메세지를 담을 수 있는 전용 클래스
+  List<String> _chats =[];                       // 메세지를 담을 수 있는 전용 클래스
+  GlobalKey<AnimatedListState> _animListKey = GlobalKey<AnimatedListState>(); //애니메이트 상태를 가지고있다
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,12 +26,16 @@ class _HomePageState extends State<HomePage> {
           body: Column(
             children: [
               Expanded(
-                child: ListView.builder(
+              child: AnimatedList(
+                key: _animListKey,
+                itemBuilder: _buildItem,
+                // initialItemCount: _chats.length,
+                // child: ListView.builder(
                   reverse: true,                     //채팅이 아래에서부터 위로 올라온다.
-                  itemBuilder: (context, index) {
-                    return _chats[index];             //입력한 textController를 리스트에 담아서 출력한다.
-                  },
-                  itemCount: _chats.length,                     //메세지 배열에 들어간 수 만큼 채팅 개수를 늘림.
+                  // itemBuilder: (context, index) {
+                  //   return _chats[index];             //입력한 textController를 리스트에 담아서 출력한다.
+                  // },
+                  // itemCount: _chats.length,                     //메세지 배열에 들어간 수 만큼 채팅 개수를 늘림.
 /*                  children: [
                     ChatMessage("Testing Message"),
                     ChatMessage("2번째 메세지"),*/
@@ -76,17 +81,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
+  Widget _buildItem(context,index,animation){
+    return ChatMessage(_chats[index],animation);
+  }
 
   void _handleSubmitted(String text) {
     var logger =Logger();
-    logger.d(text);
-    logger.e(text);
     _textEditingController.clear();               //텍스트에디터를 클리어해주어 없애준다.
-    ChatMessage newChat = ChatMessage(text);
-    setState(() {
-    _chats.insert(0,newChat);
-    });
+    _chats.insert(0,text);
+    _animListKey.currentState.insertItem(0); //animate 키의 . 현재상태를 . insertitem 에 0번째 인덱스에 넣어준다라고 알려줌
+    // setState(() {
+    // _chats.insert(0,newChat);
+    // });
 
   }
 }
