@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController _textEditingController = TextEditingController();
-  List<String> _textList =[];
+  List<ChatMessage> _chats =[];                       // 메세지를 담을 수 있는 전용 클래스
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -26,12 +26,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(
                 child: ListView.builder(
+                  reverse: true,                     //채팅이 아래에서부터 위로 올라온다.
                   itemBuilder: (context, index) {
-                    return ChatMessage(_textList[index]);             //입력한 textController를 리스트에 담아서 출력한다.
+                    return _chats[index];             //입력한 textController를 리스트에 담아서 출력한다.
                   },
-                  itemCount: _textList.length,                     //메세지 배열에 들어간 수 만큼 채팅 개수를 늘림.
-
-
+                  itemCount: _chats.length,                     //메세지 배열에 들어간 수 만큼 채팅 개수를 늘림.
 /*                  children: [
                     ChatMessage("Testing Message"),
                     ChatMessage("2번째 메세지"),*/
@@ -61,8 +60,7 @@ class _HomePageState extends State<HomePage> {
                     FlatButton(
                       onPressed: () {
                         // print(_textEditingController.text);
-                        this._textList.add(_textEditingController.text);
-                        print(_textList);
+                        print(_chats);
                         _handleSubmitted(_textEditingController.text);
                       },
                       child: Text('Send'),
@@ -85,6 +83,10 @@ class _HomePageState extends State<HomePage> {
     logger.d(text);
     logger.e(text);
     _textEditingController.clear();               //텍스트에디터를 클리어해주어 없애준다.
+    ChatMessage newChat = ChatMessage(text);
+    setState(() {
+    _chats.insert(0,newChat);
+    });
 
   }
 }
